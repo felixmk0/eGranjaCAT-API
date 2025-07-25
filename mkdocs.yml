@@ -1,0 +1,48 @@
+﻿site_name: NastrafarmSIGE API
+
+theme:
+  name: shadcn
+  show_title: true
+  show_stargazers: true
+  pygments_style:
+    light: shadcn-light
+    dark: github-dark
+  icon: heroicons:cube-transparent
+  topbar_sections: false
+
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - codehilite
+  - fenced_code
+  - pymdownx.tabbed
+  - pymdownx.blocks.details
+  - pymdownx.blocks.tab
+  - pymdownx.progressbar
+  - pymdownx.arithmatex
+
+
+nav:
+  - Introduction:
+      - Overview: index.md
+      - Project Inspiration: idea.md
+      - Background & Motivation: background.md
+      - Objectives & Scope: objectives.md
+  - System Design:
+      - Architecture Overview: architecture.md
+      - Technologies Used: technologies.md
+  - API Reference:
+      - Getting Started: api/index.md
+      - Authentication: api/auth.md
+      - Endpoints:
+          - Users: api/endpoints/users.md
+          - Farms: api/endpoints/farms.md
+          - Production: api/endpoints/production.md
+  - Legal:
+      - License: legal/license.md
+
+
+
+repo_url: "https://github.com/felixmk0/nastrafarm-api"
+site_author: Felix Montragull Kruse
