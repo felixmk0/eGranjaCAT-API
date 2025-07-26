@@ -36,11 +36,11 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Architecture Overview - NastrafarmSIGE API</title>
+    <title>Gestió Telemàtica Ramadera - NastrafarmSIGE API</title>
     
 
 
-<title>Architecture Overview</title>
+<title>Gestió Telemàtica Ramadera</title>
 
 
 
@@ -50,18 +50,18 @@
 
 
 
-<link rel="canonical" href="https://felixmk0.github.io/nastrafarm-api/architecture/">
+<link rel="canonical" href="https://felixmk0.github.io/nastrafarm-api/api/gtr-services/">
 
 
 <!-- Open Graph (Facebook, LinkedIn) -->
 
-<meta property="og:title" content="Architecture Overview">
+<meta property="og:title" content="Gestió Telemàtica Ramadera">
 
 
 
 
 
-<meta property="og:url" content="https://felixmk0.github.io/nastrafarm-api/architecture/">
+<meta property="og:url" content="https://felixmk0.github.io/nastrafarm-api/api/gtr-services/">
 
 
 
@@ -70,7 +70,7 @@
 
 <!-- Twitter Card -->
 
-<meta name="twitter:title" content="Architecture Overview">
+<meta name="twitter:title" content="Gestió Telemàtica Ramadera">
 
 
 
@@ -81,18 +81,18 @@
 
 
 
-    <link rel="icon" href="../img/favicon.ico">
+    <link rel="icon" href="../../img/favicon.ico">
 
-    <link href="../css/base.css" rel="stylesheet">
-    <link href="../css/geist.css" rel="stylesheet">
+    <link href="../../css/base.css" rel="stylesheet">
+    <link href="../../css/geist.css" rel="stylesheet">
 
     
     
 
 <link id="pygments-light" rel="stylesheet"
-    href="../css/pygments/shadcn-light.css">
+    href="../../css/pygments/shadcn-light.css">
 <link id="pygments-dark" rel="stylesheet"
-    href="../css/pygments/github-dark.css"
+    href="../../css/pygments/github-dark.css"
     media="(prefers-color-scheme: dark)">
 
 
@@ -100,15 +100,15 @@
 
     
 
-    <script src="../js/callbacks.js"></script>
+    <script src="../../js/callbacks.js"></script>
 
     
     <!-- katex -->
-<link rel="stylesheet" href="../css/katex.min.css">
+<link rel="stylesheet" href="../../css/katex.min.css">
 <!-- The loading of KaTeX is deferred to speed up page rendering -->
-<script defer src="../js/katex.min.js"></script>
+<script defer src="../../js/katex.min.js"></script>
 <!-- To automatically render math in text elements, include the auto-render extension: -->
-<script defer src="../js/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script defer src="../../js/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
     
 
     
@@ -335,7 +335,7 @@
             <ul data-slot="sidebar-menu" data-sidebar="menu" class="flex w-full min-w-0 flex-col gap-0.5">
                 
                 <li data-slot="sidebar-menu-item" data-sidebar="menu-item" class="group/menu-item relative">
-    <a data-slot="sidebar-menu-button" data-active="true" data-sidebar="menu-button"
+    <a data-slot="sidebar-menu-button" data-active="false" data-sidebar="menu-button"
         data-size="default" href="/nastrafarm-api/architecture/"
         class="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground peer/menu-button flex items-center gap-2 rounded-md p-2 text-left outline-hidden ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 data-[active=true]:bg-accent data-[active=true]:border-accent 3xl:fixed:w-full 3xl:fixed:max-w-48 relative h-[30px] w-fit overflow-visible border border-transparent text-[0.8rem] font-medium after:absolute after:inset-x-0 after:-inset-y-1 after:z-0 after:rounded-md">
 
@@ -365,7 +365,7 @@
             <ul data-slot="sidebar-menu" data-sidebar="menu" class="flex w-full min-w-0 flex-col gap-0.5">
                 
                 <li data-slot="sidebar-menu-item" data-sidebar="menu-item" class="group/menu-item relative">
-    <a data-slot="sidebar-menu-button" data-active="false" data-sidebar="menu-button"
+    <a data-slot="sidebar-menu-button" data-active="true" data-sidebar="menu-button"
         data-size="default" href="/nastrafarm-api/api/gtr-services/"
         class="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground peer/menu-button flex items-center gap-2 rounded-md p-2 text-left outline-hidden ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 data-[active=true]:bg-accent data-[active=true]:border-accent 3xl:fixed:w-full 3xl:fixed:max-w-48 relative h-[30px] w-fit overflow-visible border border-transparent text-[0.8rem] font-medium after:absolute after:inset-x-0 after:-inset-y-1 after:z-0 after:rounded-md">
 
@@ -445,14 +445,14 @@
             <div id="page-header" class="flex items-start justify-between">
 
                 <h1 class="scroll-m-20 text-4xl font-semibold tracking-tight sm:text-3xl xl:text-4xl">
-                    Architecture Overview
+                    Gestió Telemàtica Ramadera
                 </h1>
 
                 <div class="flex items-center gap-2 pt-1.5">
                     
                     <a data-slot="button"
                         class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-secondary text-secondary-foreground hover:bg-secondary/80 extend-touch-target size-8 shadow-none md:size-7"
-                        href="/nastrafarm-api/idea/">
+                        href="/nastrafarm-api/architecture/">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="tabler-icon tabler-icon-arrow-left ">
@@ -466,7 +466,7 @@
                     
                     <a data-slot="button"
                         class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-secondary text-secondary-foreground hover:bg-secondary/80 extend-touch-target size-8 shadow-none md:size-7"
-                        href="/nastrafarm-api/api/gtr-services/">
+                        href="/nastrafarm-api/legal/license/">
                         <span class="sr-only">Next</span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -485,23 +485,55 @@
 
     </div>
     <div class="typography w-full flex-1 *:data-[slot=alert]:first:mt-0">
-        <p>Currently, the project is designed with a single-tenant per database approach, meaning each client has their own deployed instance with a dedicated database. This ensures complete data isolation and simplifies security and customization for each client.</p>
-<h3 id="technologies-used">Technologies Used:</h3>
+        <p>The API integrates the official <strong>GTR (Gestió Telemàtica Ramadera)</strong> platform services to streamline the complete management of animal movements via web services, enabling efficient and reliable communication between farms and authorities.</p>
+<p>The GTR platform is designed to manage animal mobility through files or web services, especially useful for high-volume data processes, ensuring traceability and regulatory compliance.</p>
+<div class="admonition warning">
+<p class="admonition-title">Note:</p>
+<p>A <strong>mobility password</strong> is required to access GTR services. It can be requested using the following form:  <a href="https://agricultura.gencat.cat/web/.content/07-ramaderia/gestio-telematica-ramadera/documents/fitxers_estatics/sollicitud-contrasenya-GTR.doc">Request Mobility Password</a></p>
+</div>
+<h2 id="integrated-services">Integrated Services</h2>
+<h3 id="1-guide-registration-alta-de-guias">1. Guide Registration (Alta de Guías)</h3>
+<p>Allows mass registration of mobility guides for animal transport.</p>
 <ul>
-<li>Backend built with .NET 9</li>
-<li>SQL Server as the database</li>
-<li>Authentication using JWT (JSON Web Tokens)</li>
-<li>Authorization based on roles and policies that control access to different endpoints according to user permissions</li>
-<li>Background jobs via Cron Expressions</li>
-<li>API documentation with Swagger</li>
+<li>Validates business rules and animal data (species, number, origin/destination farms).</li>
+<li>Supports scheduling, transport info, and creation of DST documents.</li>
+<li>Enables efficient batch creation of transport guides.</li>
 </ul>
+<div class="admonition info">
+<p class="admonition-title"><strong>GTR Official Service Documentation:</strong></p>
+<p><a href="https://agricultura.gencat.cat/web/.content/07-ramaderia/gestio-telematica-ramadera/documents/fitxers_estatics/Cataleg-servei-alta-guies.pdf">Guide Registration Service Documentation (PDF)</a></p>
+</div>
+<h3 id="2-movement-confirmation-confirmacion-de-movimientos-de-entrada">2. Movement Confirmation (Confirmación de Movimientos de Entrada)</h3>
+<p>Enables confirmation of animal arrivals at the destination farm.</p>
+<ul>
+<li>Updates guide and movement status in the system.</li>
+<li>Supports time stamping and optional comments.</li>
+<li>Ensures traceability and validation of animal transports.</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title"><strong>GTR Official Service Documentation:</strong></p>
+<p><a href="https://agricultura.gencat.cat/web/.content/07-ramaderia/gestio-telematica-ramadera/documents/fitxers_estatics/Cataleg-servei-confirmacio-moviments-dentrada.pdf">Movement Confirmation Service Documentation (PDF)</a></p>
+</div>
+<h3 id="3-guide-update-actualizacion-de-guias">3. Guide Update (Actualización de Guías)</h3>
+<p>Allows updates to existing mobility guides for corrections or status changes.</p>
+<ul>
+<li>Modify data of DST guides downloaded and processed on mobile apps.</li>
+<li>Changes guide status to “Issued” and mobility status to “Closed” after update.</li>
+<li>Communication via REST/HTTPS with specific endpoints for download and update.</li>
+<li>Validates authentication and business rules before processing.</li>
+<li>Returns detailed error codes for various validation failures.</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title"><strong>GTR Official Service Documentation:</strong></p>
+<p><a href="https://agricultura.gencat.cat/web/.content/07-ramaderia/gestio-telematica-ramadera/documents/fitxers_estatics/Cataleg-servei-guies-de-mobilitat.pdf">Guide Update Service Documentation (PDF)</a></p>
+</div>
     </div>
 </article>
                                 <div class="mx-auto flex flex-wrap h-16 w-full max-w-2xl items-center gap-2 px-4 md:px-0">
     
     <a data-slot="button"
         class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-secondary text-secondary-foreground hover:bg-secondary/80 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5 shadow-none"
-        href="/nastrafarm-api/idea/">
+        href="/nastrafarm-api/architecture/">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
             class="tabler-icon tabler-icon-arrow-left ">
@@ -509,14 +541,14 @@
             <path d="M5 12l6 6"></path>
             <path d="M5 12l6 -6"></path>
         </svg>
-        Project Inspiration
+        Architecture Overview
     </a>
     
     
     <a data-slot="button"
         class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-secondary text-secondary-foreground hover:bg-secondary/80 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5 ml-auto shadow-none"
-        href="/nastrafarm-api/api/gtr-services/">
-        Gestió Telemàtica Ramadera
+        href="/nastrafarm-api/legal/license/">
+        License
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
             class="tabler-icon tabler-icon-arrow-right ">
@@ -548,13 +580,13 @@
                     
                     <div class="flex flex-col gap-3">
                         
-                        <a class="text-2xl font-medium" href="..">
+                        <a class="text-2xl font-medium" href="../..">
                             
                             Overview
                             
                         </a>
                         
-                        <a class="text-2xl font-medium" href="../idea/">
+                        <a class="text-2xl font-medium" href="../../idea/">
                             
                             Project Inspiration
                             
@@ -569,7 +601,7 @@
                     
                     <div class="flex flex-col gap-3">
                         
-                        <a class="text-2xl font-medium" href="./">
+                        <a class="text-2xl font-medium" href="../../architecture/">
                             
                             Architecture Overview
                             
@@ -584,7 +616,7 @@
                     
                     <div class="flex flex-col gap-3">
                         
-                        <a class="text-2xl font-medium" href="../api/gtr-services/">
+                        <a class="text-2xl font-medium" href="./">
                             
                             Gestió Telemàtica Ramadera
                             
@@ -608,7 +640,7 @@
                     
                     <div class="flex flex-col gap-3">
                         
-                        <a class="text-2xl font-medium" href="../legal/license/">
+                        <a class="text-2xl font-medium" href="../../legal/license/">
                             
                             License
                             
@@ -635,6 +667,30 @@
         
         
         
+        
+        <a href="#1-guide-registration-alta-de-guias"
+            class="text-muted-foreground hover:text-foreground data-[active=true]:text-foreground text-[0.8rem] no-underline transition-colors data-[depth=3]:pl-4 data-[depth=4]:pl-6"
+            data-active="false" data-depth="2">
+            1. Guide Registration (Alta de Guías)
+        </a>
+        
+
+        
+        <a href="#2-movement-confirmation-confirmacion-de-movimientos-de-entrada"
+            class="text-muted-foreground hover:text-foreground data-[active=true]:text-foreground text-[0.8rem] no-underline transition-colors data-[depth=3]:pl-4 data-[depth=4]:pl-6"
+            data-active="false" data-depth="2">
+            2. Movement Confirmation (Confirmación de Movimientos de Entrada)
+        </a>
+        
+
+        
+        <a href="#3-guide-update-actualizacion-de-guias"
+            class="text-muted-foreground hover:text-foreground data-[active=true]:text-foreground text-[0.8rem] no-underline transition-colors data-[depth=3]:pl-4 data-[depth=4]:pl-6"
+            data-active="false" data-depth="2">
+            3. Guide Update (Actualización de Guías)
+        </a>
+        
+
         
         
         
@@ -665,12 +721,12 @@
     </div>
      
 
-<script src="../search/main.js"></script>
+<script src="../../search/main.js"></script>
 
 
     
 
-    <script src="../js/copy-button.js"></script>
+    <script src="../../js/copy-button.js"></script>
     <script>updatePygmentsStylesheet();</script>
     
     <script>fetchStargazers("https://github.com/felixmk0/nastrafarm-api");</script>
