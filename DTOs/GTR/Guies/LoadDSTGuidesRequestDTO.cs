@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace nastrafarmapi.DTOs.GTR
+namespace nastrafarmapi.DTOs.GTR.Guies
 {
     public class LoadDSTGuidesRequestDTO
     {

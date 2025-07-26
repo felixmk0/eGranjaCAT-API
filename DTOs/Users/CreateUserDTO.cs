@@ -16,5 +16,7 @@ namespace nastrafarmapi.DTOs.Users
         [Required]
         [EnumDataType(typeof(UserRole))]
         public required string Role { get; set; } 
+        [Required]
+        public required List<string> Permissions { get; set; }
     }
 }

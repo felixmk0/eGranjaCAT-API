@@ -7,7 +7,6 @@ namespace nastrafarmapi.Controllers
 {
     [ApiController]
     [Route("api/farms")]
-    [Authorize]
     public class FarmsController : ControllerBase
     {
         private readonly IFarmService farmService;
@@ -17,8 +16,9 @@ namespace nastrafarmapi.Controllers
             this.farmService = farmService;
         }
 
-        [HttpGet]
 
+        [HttpGet]
+        [Authorize(Policy = "Farms")]
         public async Task<IActionResult> GetFarmsAsync()
         {
             var result = await farmService.GetFarmsAsync();
@@ -27,6 +27,7 @@ namespace nastrafarmapi.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetFarmById")]
+        [Authorize(Policy = "Farms")]
         public async Task<IActionResult> GetFarmByIdAsync(int id)
         {
             var result = await farmService.GetFarmByIdAsync(id);

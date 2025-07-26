@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using nastrafarmapi.DTOs.GTR;
+using nastrafarmapi.DTOs.GTR.Guies;
 
 namespace nastrafarmapi.Services
 {

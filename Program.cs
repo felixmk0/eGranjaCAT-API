@@ -1,10 +1,11 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using nastrafarmapi.Data;
 using nastrafarmapi.Entities;
+using nastrafarmapi.Extensions.Cron;
 using nastrafarmapi.Interfaces;
 using nastrafarmapi.Services;
 using System.Security.Claims;
@@ -47,6 +48,13 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Entrades", policy => policy.RequireClaim("Access", "Entrades"));
+    options.AddPolicy("Lots", policy => policy.RequireClaim("Access", "Lots"));
+    options.AddPolicy("Farms", policy => policy.RequireClaim("Access", "Farms"));
+});
+
 
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddHttpContextAccessor();
@@ -57,6 +65,14 @@ builder.Services.AddTransient<IEntradaService, EntradaService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddControllers();
 
+builder.Services.AddScoped<IBackupService, BackupService>();
+builder.Services.AddCronJob<BackupJob>(options =>
+{
+    options.TimeZone = TimeZoneInfo.Local;
+    options.CronExpression = builder.Configuration["CronExpressions:BackupJob"]!;
+});
+
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -64,7 +80,7 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "NastrafarmSIGE - RESTful API",
         Version = "v1.0",
-        Description = "Documentaci� oficial de la API per la gestio d'explotacions porcines catalanes.",
+        Description = "Documentació oficial de la API per la gestio d'explotacions porcines catalanes.",
         Contact = new Microsoft.OpenApi.Models.OpenApiContact
         {
             Name = " - Felix Montragull Kruse",

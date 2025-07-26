@@ -9,10 +9,7 @@ namespace nastrafarmapi.Services
         private readonly ILogger<EmailService> logger;
         private readonly IWebHostEnvironment webHostEnvironment;
 
-        public EmailService(
-            IConfiguration configuration,
-            ILogger<EmailService> logger,
-            IWebHostEnvironment webHostEnvironment)
+        public EmailService(IConfiguration configuration, ILogger<EmailService> logger, IWebHostEnvironment webHostEnvironment)
         {
             this.configuration = configuration;
             this.logger = logger;
@@ -40,7 +37,7 @@ namespace nastrafarmapi.Services
                 Subject = subject,
                 Body = body,
                 IsBodyHtml = true,
-                
+
             };
             mailMessage.To.Add(to);
 

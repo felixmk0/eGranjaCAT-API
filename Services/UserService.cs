@@ -35,191 +35,273 @@ namespace nastrafarmapi.Services
         {
             var resultObj = new ServiceResult<AuthResponseDTO>();
 
-            var user = mapper.Map<User>(userDTO);
-            var result = await userManager.CreateAsync(user, userDTO.Password);
-
-            if (!result.Succeeded)
+            try
             {
-                foreach (var error in result.Errors)
-                {
-                    logger.LogError($"Error: {error.Description}");
-                    resultObj.Errors.Add(error.Description);
-                }
-                resultObj.Success = false;
-                return resultObj;
-            }
+                var user = mapper.Map<User>(userDTO);
+                var result = await userManager.CreateAsync(user, userDTO.Password);
 
-            var roleName = userDTO.Role.ToString();
-            var roleExists = await roleManager.RoleExistsAsync(roleName);
-
-            if (!roleExists)
-            {
-                var roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
-                if (!roleResult.Succeeded)
+                if (!result.Succeeded)
                 {
-                    foreach (var error in roleResult.Errors)
+                    foreach (var error in result.Errors)
                     {
-                        logger.LogError($"Error creando el rol: {error.Description}");
+                        logger.LogError($"Error creant usuari: {error.Description}");
                         resultObj.Errors.Add(error.Description);
                     }
                     resultObj.Success = false;
                     return resultObj;
                 }
-            }
 
-            var addToRoleResult = await userManager.AddToRoleAsync(user, roleName);
-            if (!addToRoleResult.Succeeded)
-            {
-                foreach (var error in addToRoleResult.Errors)
+                var roleName = userDTO.Role.ToString();
+                var roleExists = await roleManager.RoleExistsAsync(roleName);
+
+                if (!roleExists)
                 {
-                    logger.LogError($"Error asignando rol: {error.Description}");
-                    resultObj.Errors.Add(error.Description);
+                    var roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
+                    if (!roleResult.Succeeded)
+                    {
+                        foreach (var error in roleResult.Errors)
+                        {
+                            logger.LogError($"Error creant el rol: {error.Description}");
+                            resultObj.Errors.Add(error.Description);
+                        }
+                        resultObj.Success = false;
+                        return resultObj;
+                    }
                 }
-                resultObj.Success = false;
+
+                var addToRoleResult = await userManager.AddToRoleAsync(user, roleName);
+                if (!addToRoleResult.Succeeded)
+                {
+                    foreach (var error in addToRoleResult.Errors)
+                    {
+                        logger.LogError($"Error asignant el rol: {error.Description}");
+                        resultObj.Errors.Add(error.Description);
+                    }
+                    resultObj.Success = false;
+                    return resultObj;
+                }
+
+                foreach (var perm in userDTO.Permissions)
+                {
+                    await userManager.AddClaimAsync(user, new Claim("Access", perm));
+                }
+
+                var variables = new Dictionary<string, string>
+                {
+                    { "Name", userDTO.Name },
+                    { "Email", userDTO.Email },
+                    { "Role", userDTO.Role.ToString() },
+                    { "RegistrationDate", DateTime.Now.ToString("dd/MM/yyyy") }
+                };
+
+                var emailResult = await emailService.SendEmailAsync(userDTO.Email, "Benvingut a la nostra plataforma!", "Benvinguda.html", variables);
+                if (!emailResult.Success)
+                {
+                    logger.LogError("Error enviando correo de bienvenida: " + string.Join(", ", emailResult.Errors));
+                }
+
+                var tokenDTO = mapper.Map<TokenUserDTO>(user);
+                var token = await BuildJwtToken(tokenDTO);
+
+                resultObj.Data = token;
+                resultObj.Success = true;
                 return resultObj;
             }
-
-            var variables = new Dictionary<string, string>
+            catch (Exception ex)
             {
-                { "Name", userDTO.Name },
-                { "Email", userDTO.Email },
-                { "Role", userDTO.Role.ToString() },
-                { "RegistrationDate", DateTime.Now.ToString("dd/MM/yyyy") }
-            };
-
-            var emailResult = await emailService.SendEmailAsync(userDTO.Email, "Benvingut a la nostra plataforma!", "Benvinguda.html", variables);
-            if (!emailResult.Success) logger.LogError("Error sending welcome email: " + string.Join(", ", emailResult.Errors));
-
-            var tokenDTO = mapper.Map<TokenUserDTO>(user);
-
-            var token = await BuildJwtToken(tokenDTO);
-            resultObj.Data = token;
-            resultObj.Success = true;
-            return resultObj;
+                logger.LogError(ex, "Excepción al crear el usuario.");
+                resultObj.Success = false;
+                resultObj.Errors.Add("Error inesperado al crear el usuario.");
+                return resultObj;
+            }
         }
+
 
 
         public async Task<ServiceResult<AuthResponseDTO>> LoginUserAsync(LoginUserDTO loginDTO)
         {
             var resultObj = new ServiceResult<AuthResponseDTO>();
-            var user = await userManager.FindByEmailAsync(loginDTO.Email);
-            if (user == null)
+
+            try
             {
-                logger.LogError("User not found.");
-                resultObj.Errors.Add("Invalid email or password.");
+                var user = await userManager.FindByEmailAsync(loginDTO.Email);
+                if (user == null)
+                {
+                    logger.LogWarning("Inici de sessió fallit: usuari no trobat amb el correu {Email}", loginDTO.Email);
+                    resultObj.Errors.Add("Correu o contrasenya invàlids.");
+                    resultObj.Success = false;
+                    return resultObj;
+                }
+
+                var passwordCheck = await userManager.CheckPasswordAsync(user, loginDTO.Password);
+                if (!passwordCheck)
+                {
+                    logger.LogWarning("Inici de sessió fallit: contrasenya incorrecta per a l'usuari {Email}", loginDTO.Email);
+                    resultObj.Errors.Add("Correu o contrasenya invàlids.");
+                    resultObj.Success = false;
+                    return resultObj;
+                }
+
+                var tokenDTO = mapper.Map<TokenUserDTO>(user);
+
+                var roles = await userManager.GetRolesAsync(user);
+                tokenDTO.Role = roles.Any() && Enum.TryParse<UserRole>(roles.First(), out var role) ? role.ToString() : UserRole.User.ToString();
+
+                var token = await BuildJwtToken(tokenDTO);
+                resultObj.Data = token;
+                resultObj.Success = true;
+                return resultObj;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error inesperat en iniciar sessió per a l'usuari {Email}", loginDTO.Email);
+                resultObj.Errors.Add("S'ha produït un error inesperat en iniciar sessió. Torna-ho a intentar més tard.");
                 resultObj.Success = false;
                 return resultObj;
             }
-
-            var passwordCheck = await userManager.CheckPasswordAsync(user, loginDTO.Password);
-            if (!passwordCheck)
-            {
-                logger.LogError("Invalid password.");
-                resultObj.Errors.Add("Invalid email or password.");
-                resultObj.Success = false;
-                return resultObj;
-            }
-
-            var tokenDTO = mapper.Map<TokenUserDTO>(user);
-            var roles = await userManager.GetRolesAsync(user);
-            tokenDTO.Role = roles.Any() && Enum.TryParse<UserRole>(roles.First(), out var role) ? role.ToString() : UserRole.User.ToString();
-
-            var token = await BuildJwtToken(tokenDTO);
-            resultObj.Data = token;
-            resultObj.Success = true;
-            return resultObj;
         }
+
 
 
         public async Task<ServiceResult<bool>> DeleteUserById(int id)
         {
             var resultObj = new ServiceResult<bool>();
-            var user = await userManager.FindByIdAsync(id.ToString());
-            if (user == null)
+
+            try
             {
-                logger.LogError($"User with ID {id} not found.");
-                resultObj.Errors.Add($"User with ID {id} not found.");
-                resultObj.Success = false;
-                return resultObj;
-            }
-            var deleteResult = await userManager.DeleteAsync(user);
-            if (!deleteResult.Succeeded)
-            {
-                foreach (var error in deleteResult.Errors)
+                var user = await userManager.FindByIdAsync(id.ToString());
+                if (user == null)
                 {
-                    logger.LogError($"Error deleting user: {error.Description}");
-                    resultObj.Errors.Add(error.Description);
+                    logger.LogWarning("Usuari amb ID {Id} no trobat.", id);
+                    resultObj.Errors.Add($"L'usuari amb ID {id} no s'ha trobat.");
+                    resultObj.Success = false;
+                    return resultObj;
                 }
+
+                var deleteResult = await userManager.DeleteAsync(user);
+                if (!deleteResult.Succeeded)
+                {
+                    foreach (var error in deleteResult.Errors)
+                    {
+                        logger.LogError("Error en eliminar l'usuari amb ID {Id}: {Error}", id, error.Description);
+                        resultObj.Errors.Add(error.Description);
+                    }
+                    resultObj.Success = false;
+                    return resultObj;
+                }
+
+                resultObj.Data = true;
+                resultObj.Success = true;
+                return resultObj;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Excepció inesperada en intentar eliminar l'usuari amb ID {Id}", id);
+                resultObj.Errors.Add("S'ha produït un error inesperat en eliminar l'usuari.");
                 resultObj.Success = false;
                 return resultObj;
             }
-            resultObj.Data = true;
-            resultObj.Success = true;
-            return resultObj;
         }
+
 
         public async Task<ServiceResult<List<GetUserDTO>>> GetUsersAsync()
         {
             var resultObj = new ServiceResult<List<GetUserDTO>>();
-            var users = await userManager.Users.ToListAsync();
-            var userDTOs = mapper.Map<List<GetUserDTO>>(users);
 
-            if (userDTOs == null || !userDTOs.Any())
+            try
             {
-                logger.LogInformation("No users found.");
-                resultObj.Data = new List<GetUserDTO>();
+                var users = await userManager.Users.ToListAsync();
+                var userDTOs = mapper.Map<List<GetUserDTO>>(users);
+
+                if (userDTOs == null || !userDTOs.Any())
+                {
+                    logger.LogInformation("No s'han trobat usuaris.");
+                    resultObj.Data = new List<GetUserDTO>();
+                    resultObj.Success = true;
+                    return resultObj;
+                }
+
+                resultObj.Data = userDTOs;
                 resultObj.Success = true;
                 return resultObj;
             }
-
-            resultObj.Data = userDTOs;
-            resultObj.Success = true;
-
-            return resultObj;
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error inesperat en obtenir la llista d'usuaris.");
+                resultObj.Errors.Add("S'ha produït un error inesperat en obtenir els usuaris.");
+                resultObj.Success = false;
+                return resultObj;
+            }
         }
 
         public async Task<ServiceResult<GetUserDTO?>> GetUserByIdAsync(int id)
         {
             var resultObj = new ServiceResult<GetUserDTO?>();
-            var user = await userManager.FindByIdAsync(id.ToString());
-            var userDTO = mapper.Map<GetUserDTO>(user);
 
-            if (userDTO == null)
+            try
             {
-                logger.LogError($"User with ID {id} not found.");
-                resultObj.Errors.Add($"User with ID {id} not found.");
+                var user = await userManager.FindByIdAsync(id.ToString());
+                var userDTO = mapper.Map<GetUserDTO>(user);
+
+                if (userDTO == null)
+                {
+                    logger.LogWarning("Usuari amb ID {Id} no trobat.", id);
+                    resultObj.Errors.Add($"L'usuari amb ID {id} no s'ha trobat.");
+                    resultObj.Success = false;
+                    return resultObj;
+                }
+
+                resultObj.Data = userDTO;
+                resultObj.Success = true;
+                return resultObj;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error inesperat en obtenir l'usuari amb ID {Id}", id);
+                resultObj.Errors.Add("S'ha produït un error inesperat en obtenir l'usuari.");
                 resultObj.Success = false;
                 return resultObj;
             }
-
-            resultObj.Data = userDTO;
-            resultObj.Success = true;
-            return resultObj;
         }
+
 
 
         private async Task<AuthResponseDTO> BuildJwtToken(TokenUserDTO userDTO)
         {
-            var claims = new List<Claim>
+            try
             {
-                new Claim("id", userDTO.Id.ToString()),
-                new Claim(ClaimTypes.Name, userDTO.Email),
-                new Claim(ClaimTypes.Role, userDTO.Role.ToString())
-            };
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, userDTO.Id.ToString()),
+                    new Claim(ClaimTypes.Name, userDTO.Email),
+                    new Claim(ClaimTypes.Role, userDTO.Role.ToString())
+                };
 
-            var user = await userManager.FindByEmailAsync(userDTO.Email);
-            var claimsDb = await userManager.GetClaimsAsync(user!);
+                var user = await userManager.FindByEmailAsync(userDTO.Email);
+                if (user == null)
+                {
+                    logger.LogError("Usuari no trobat en generar el token JWT per {Email}", userDTO.Email);
+                    throw new InvalidOperationException("No s'ha pogut generar el token: usuari no trobat.");
+                }
 
-            claims.AddRange(claimsDb);
+                var claimsDb = await userManager.GetClaimsAsync(user);
+                claims.AddRange(claimsDb);
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtKey"]!));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.UtcNow.AddDays(1);
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtKey"]!));
+                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                var expires = DateTime.UtcNow.AddDays(1);
 
-            var secToken = new JwtSecurityToken(claims: claims, expires: expires, signingCredentials: creds);
+                var secToken = new JwtSecurityToken(claims: claims, expires: expires, signingCredentials: creds);
+                var token = new JwtSecurityTokenHandler().WriteToken(secToken);
 
-            var token = new JwtSecurityTokenHandler().WriteToken(secToken);
-            return new AuthResponseDTO { Token = token, Expiraton = expires, };
+                return new AuthResponseDTO { Token = token, Expiraton = expires };
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error inesperat en construir el token JWT.");
+                throw;
+            }
         }
+
     }
 }

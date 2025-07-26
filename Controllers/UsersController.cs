@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using nastrafarmapi.DTOs.Users;
+using nastrafarmapi.Extensions;
 using nastrafarmapi.Interfaces;
 
 namespace nastrafarmapi.Controllers
@@ -45,10 +46,16 @@ namespace nastrafarmapi.Controllers
         [Authorize]
         public async Task<IActionResult> GetUserByIdAsync(int id)
         {
+            int loggedUserId = User.GetUserId();
+            bool isAdmin = User.IsInRole("Admin");
+
+            if (!isAdmin && id != loggedUserId) return Forbid("No tens permís per veure aquesta informació");
+
             var result = await userService.GetUserByIdAsync(id);
             if (!result.Success) return BadRequest(new { result.Errors });
             return Ok(result.Data);
         }
+
 
         [HttpDelete("{id:int}")]
         [Authorize(Roles = "Admin")]

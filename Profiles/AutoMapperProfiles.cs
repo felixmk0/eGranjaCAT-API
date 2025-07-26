@@ -41,5 +41,9 @@ public class AutoMapperProfiles : Profile
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore());
+
+        CreateMap<Entrada, GetEntradaDTO>()
+            .ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => src.Categoria))
+            .ForMember(dest => dest.Origen, opt => opt.MapFrom(src => src.Origen));
     }
 }

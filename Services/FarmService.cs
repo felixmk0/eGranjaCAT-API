@@ -35,9 +35,9 @@ public class FarmService : IFarmService
         return resultObj;
     }
 
-    public async Task<ServiceResult<object>> CreateFarmAsync(CreateFarmDTO createFarmDTO)
+    public async Task<ServiceResult<int?>> CreateFarmAsync(CreateFarmDTO createFarmDTO)
     {
-        var resultObj = new ServiceResult<object>();
+        var resultObj = new ServiceResult<int?>();
         var farm = mapper.Map<Farm>(createFarmDTO);
 
         farm.CreatedAt = DateTime.UtcNow;

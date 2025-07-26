@@ -7,7 +7,7 @@ using nastrafarmapi.Interfaces;
 namespace nastrafarmapi.Controllers
 {
 
-    [Authorize]
+    [Authorize(Policy = "Lots")]
     [ApiController]
     [Route("api/{farmId:int}/lots")]
     public class LotsController : ControllerBase
@@ -19,12 +19,7 @@ namespace nastrafarmapi.Controllers
             service = lotServices;
         }
 
-        /// <summary>
-        /// Crea un nou lot per a una granja.
-        /// </summary>
-        /// <param name="farmId">ID de la granja.</param>
-        /// <param name="dto">Dades del lot a crear.</param>
-        /// <returns>Lot creat o errors de validació.</returns>
+
         [HttpPost]
         public async Task<IActionResult> CreateLot(int farmId, [FromBody] CreateLotDTO dto)
         {
@@ -34,11 +29,6 @@ namespace nastrafarmapi.Controllers
             return CreatedAtAction("GetLotById", new { farmId, id = result.Data }, result.Data);
         }
 
-        /// <summary>
-        /// Obtén tots els lots actius d'una granja.
-        /// </summary>
-        /// <param name="farmId">ID de la granja.</param>
-        /// <returns>Llista de lots actius.</returns>
         [HttpGet("active")]
         public async Task<IActionResult> GetActiveLots(int farmId)
         {
@@ -47,11 +37,6 @@ namespace nastrafarmapi.Controllers
             return Ok(result.Data);
         }
 
-        /// <summary>
-        /// Obtén tots els lots d'una granja.
-        /// </summary>
-        /// <param name="farmId">ID de la granja.</param>
-        /// <returns>Llista de lots.</returns>
         [HttpGet]
         public async Task<IActionResult> GetLots(int farmId)
         {
@@ -60,12 +45,6 @@ namespace nastrafarmapi.Controllers
             return Ok(result.Data);
         }
 
-        /// <summary>
-        /// Obtén un lot per ID dins d'una granja.
-        /// </summary>
-        /// <param name="farmId">ID de la granja.</param>
-        /// <param name="id">ID del lot.</param>
-        /// <returns>Lot trobat o error.</returns>
         [HttpGet("{id:int}", Name = "GetLotById")]
         public async Task<IActionResult> GetLotById(int farmId, int id)
         {
@@ -74,13 +53,6 @@ namespace nastrafarmapi.Controllers
             return Ok(result.Data);
         }
 
-        /// <summary>
-        /// Actualitza un lot existent.
-        /// </summary>
-        /// <param name="farmId">ID de la granja.</param>
-        /// <param name="id">ID del lot.</param>
-        /// <param name="dto">Dades noves del lot.</param>
-        /// <returns>Lot actualitzat o errors.</returns>
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateLot(int farmId, int id, [FromBody] UpdateLotDTO dto)
         {
