@@ -31,7 +31,8 @@ nav:
       - Objectives & Scope: objectives.md
   - System Design:
       - Architecture Overview: architecture.md
-      - Technologies Used: technologies.md
+  - Third-party services: 
+      - Gestió Telemàtica Ramadera:  api/gtr-services.md
   - API Reference:
       - Getting Started: api/index.md
       - Authentication: api/auth.md
