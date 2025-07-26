@@ -334,6 +334,23 @@
         <div data-slot="sidebar-group-content" data-sidebar="group-content" class="w-full text-sm">
             <ul data-slot="sidebar-menu" data-sidebar="menu" class="flex w-full min-w-0 flex-col gap-0.5">
                 
+                <li data-slot="sidebar-menu-item" data-sidebar="menu-item" class="group/menu-item relative">
+    <a data-slot="sidebar-menu-button" data-active="false" data-sidebar="menu-button"
+        data-size="default" href="/nastrafarm-api/architecture/"
+        class="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground peer/menu-button flex items-center gap-2 rounded-md p-2 text-left outline-hidden ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 data-[active=true]:bg-accent data-[active=true]:border-accent 3xl:fixed:w-full 3xl:fixed:max-w-48 relative h-[30px] w-fit overflow-visible border border-transparent text-[0.8rem] font-medium after:absolute after:inset-x-0 after:-inset-y-1 after:z-0 after:rounded-md">
+
+        
+        Architecture Overview
+        
+
+        
+
+        
+
+        
+    </a>
+</li>
+                
             </ul>
         </div>
     </div>
@@ -427,7 +444,7 @@
     <div class="typography w-full flex-1 *:data-[slot=alert]:first:mt-0">
         <p>The NastrafarmSIGE API is a project that provides programmatic access to manage pig farm data based on the Integral System for Livestock Farm Management (SIGE) by Generalitat de Catalunya.<br />
 It enables integration with external systems, automating farm management tasks and reporting.</p>
-<p>This API is developed using .NET 9 and C#, with a MySQL database backend for reliable and scalable data management.</p>
+<p>This API is developed using .NET 9 and C#, with a SQL Server database backend for reliable and scalable data management.</p>
 <div class="admonition info">
 <p class="admonition-title">Information:</p>
 <p>This project is currently <strong>under active development</strong>.  Features, structure, and content may change frequently. Progress so far  (aprox.):</p>
@@ -499,6 +516,12 @@ It enables integration with external systems, automating farm management tasks a
                     <div class="text-muted-foreground text-sm font-medium">System Design</div>
                     
                     <div class="flex flex-col gap-3">
+                        
+                        <a class="text-2xl font-medium" href="architecture/">
+                            
+                            Architecture Overview
+                            
+                        </a>
                         
                     </div>
                     

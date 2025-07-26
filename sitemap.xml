@@ -2,14 +2,18 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://felixmk0.github.io/nastrafarm-api/</loc>
-         <lastmod>2025-07-25</lastmod>
+         <lastmod>2025-07-26</lastmod>
+    </url>
+    <url>
+         <loc>https://felixmk0.github.io/nastrafarm-api/architecture/</loc>
+         <lastmod>2025-07-26</lastmod>
     </url>
     <url>
          <loc>https://felixmk0.github.io/nastrafarm-api/idea/</loc>
-         <lastmod>2025-07-25</lastmod>
+         <lastmod>2025-07-26</lastmod>
     </url>
     <url>
          <loc>https://felixmk0.github.io/nastrafarm-api/legal/license/</loc>
-         <lastmod>2025-07-25</lastmod>
+         <lastmod>2025-07-26</lastmod>
     </url>
 </urlset>
