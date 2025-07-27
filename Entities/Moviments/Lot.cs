@@ -6,8 +6,8 @@ public class Lot
     public required string Name { get; set; }
     public bool Active { get; set; } = true;
 
-    public string CreatedBy { get; set; } = null!;
-    public User CreatedByUser { get; set; } = null!;
+    public string UserGuid { get; set; } 
+    public User User { get; set; } = null!;
 
     public int FarmId { get; set; }
     public Farm Farm { get; set; } = null!; 

@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="ClosedXML" Version="0.105.0" />
     <PackageReference Include="Cronos" Version="0.11.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.7" />
@@ -26,6 +27,7 @@
 
   <ItemGroup>
     <Folder Include="DTOs\GTR\Entrades\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

@@ -48,11 +48,26 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("Entrades", policy => policy.RequireClaim("Access", "Entrades"));
-    options.AddPolicy("Lots", policy => policy.RequireClaim("Access", "Lots"));
-    options.AddPolicy("Farms", policy => policy.RequireClaim("Access", "Farms"));
+    options.AddPolicy("Entrades", policy =>
+        policy.RequireAssertion(context =>
+            context.User.IsInRole("Admin") || context.User.HasClaim("Access", "Entrades")
+        )
+    );
+
+    options.AddPolicy("Lots", policy =>
+        policy.RequireAssertion(context =>
+            context.User.IsInRole("Admin") || context.User.HasClaim("Access", "Lots")
+        )
+    );
+
+    options.AddPolicy("Farms", policy =>
+        policy.RequireAssertion(context =>
+            context.User.IsInRole("Admin") || context.User.HasClaim("Access", "Farms")
+        )
+    );
 });
 
 
@@ -63,6 +78,7 @@ builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ILotService, LotService>();
 builder.Services.AddTransient<IEntradaService, EntradaService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.AddTransient<IExcelService, ExcelService>();
 builder.Services.AddControllers();
 
 builder.Services.AddScoped<IBackupService, BackupService>();

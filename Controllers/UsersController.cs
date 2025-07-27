@@ -44,12 +44,12 @@ namespace nastrafarmapi.Controllers
 
         [HttpGet("{id:int}")]
         [Authorize]
-        public async Task<IActionResult> GetUserByIdAsync(int id)
+        public async Task<IActionResult> GetUserByIdAsync(Guid id)
         {
-            int loggedUserId = User.GetUserId();
+            var userGuid = Guid.Parse(User.GetUserId());
             bool isAdmin = User.IsInRole("Admin");
 
-            if (!isAdmin && id != loggedUserId) return Forbid("No tens permís per veure aquesta informació");
+            if (!isAdmin && id != userGuid) return Forbid("No tens permís per veure aquesta informació");
 
             var result = await userService.GetUserByIdAsync(id);
             if (!result.Success) return BadRequest(new { result.Errors });
@@ -59,7 +59,7 @@ namespace nastrafarmapi.Controllers
 
         [HttpDelete("{id:int}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteUserById(int id)
+        public async Task<IActionResult> DeleteUserById(Guid id)
         {
             var result = await userService.DeleteUserById(id);
             if (!result.Success) return BadRequest(new { result.Errors });

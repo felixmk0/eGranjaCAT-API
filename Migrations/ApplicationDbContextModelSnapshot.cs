@@ -6,10 +6,9 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using nastrafarmapi.Data;
 
-
 #nullable disable
 
-namespace PorcXarxaAPI.Migrations
+namespace nastrafarmapi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -37,10 +36,6 @@ namespace PorcXarxaAPI.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("FarmId")
                         .HasColumnType("int");
 
@@ -51,11 +46,15 @@ namespace PorcXarxaAPI.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("UserGuid")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedBy");
-
                     b.HasIndex("FarmId");
+
+                    b.HasIndex("UserGuid");
 
                     b.ToTable("Lots");
                 });
@@ -193,7 +192,7 @@ namespace PorcXarxaAPI.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("NastrafarmSIGE.Entities.Farm", b =>
+            modelBuilder.Entity("nastrafarmapi.Entities.Farm", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -228,7 +227,76 @@ namespace PorcXarxaAPI.Migrations
                     b.ToTable("Farms");
                 });
 
-            modelBuilder.Entity("NastrafarmSIGE.Entities.User", b =>
+            modelBuilder.Entity("nastrafarmapi.Entities.Moviments.Entrada", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Categoria")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CodiREGA")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Data")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FarmId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LotId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MarcaOficial")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NombreAnimals")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NumeroDocumentTrasllat")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Observacions")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Origen")
+                        .HasColumnType("int");
+
+                    b.Property<double>("PesIndividual")
+                        .HasColumnType("float");
+
+                    b.Property<double>("PesTotal")
+                        .HasColumnType("float");
+
+                    b.Property<bool>("Updated")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserGuid")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FarmId");
+
+                    b.HasIndex("LotId");
+
+                    b.HasIndex("UserGuid");
+
+                    b.ToTable("Entrades");
+                });
+
+            modelBuilder.Entity("nastrafarmapi.Entities.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -305,87 +373,23 @@ namespace PorcXarxaAPI.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("PorcXarxaAPI.Models.Entrada", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Categoria")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CodiREGA")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("Data")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("FarmId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LotId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MarcaOficial")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("NombreAnimals")
-                        .HasColumnType("int");
-
-                    b.Property<string>("NumeroDocumentTrasllat")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Observacions")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Origen")
-                        .HasColumnType("int");
-
-                    b.Property<double>("PesIndividual")
-                        .HasColumnType("float");
-
-                    b.Property<double>("PesTotal")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedBy");
-
-                    b.HasIndex("FarmId");
-
-                    b.ToTable("Entrades");
-                });
-
             modelBuilder.Entity("Lot", b =>
                 {
-                    b.HasOne("NastrafarmSIGE.Entities.User", "CreatedByUser")
+                    b.HasOne("nastrafarmapi.Entities.Farm", "Farm")
                         .WithMany()
-                        .HasForeignKey("CreatedBy")
+                        .HasForeignKey("FarmId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("NastrafarmSIGE.Entities.Farm", "Farm")
+                    b.HasOne("nastrafarmapi.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("FarmId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("UserGuid")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("CreatedByUser");
-
                     b.Navigation("Farm");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -399,7 +403,7 @@ namespace PorcXarxaAPI.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("NastrafarmSIGE.Entities.User", null)
+                    b.HasOne("nastrafarmapi.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -408,7 +412,7 @@ namespace PorcXarxaAPI.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("NastrafarmSIGE.Entities.User", null)
+                    b.HasOne("nastrafarmapi.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -423,7 +427,7 @@ namespace PorcXarxaAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("NastrafarmSIGE.Entities.User", null)
+                    b.HasOne("nastrafarmapi.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -432,30 +436,38 @@ namespace PorcXarxaAPI.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("NastrafarmSIGE.Entities.User", null)
+                    b.HasOne("nastrafarmapi.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PorcXarxaAPI.Models.Entrada", b =>
+            modelBuilder.Entity("nastrafarmapi.Entities.Moviments.Entrada", b =>
                 {
-                    b.HasOne("NastrafarmSIGE.Entities.User", "CreatedByUser")
+                    b.HasOne("nastrafarmapi.Entities.Farm", "Farm")
                         .WithMany()
-                        .HasForeignKey("CreatedBy")
+                        .HasForeignKey("FarmId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("NastrafarmSIGE.Entities.Farm", "Farm")
+                    b.HasOne("Lot", "Lot")
                         .WithMany()
-                        .HasForeignKey("FarmId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("LotId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("CreatedByUser");
+                    b.HasOne("nastrafarmapi.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserGuid")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Farm");
+
+                    b.Navigation("Lot");
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

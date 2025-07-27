@@ -7,6 +7,5 @@ namespace nastrafarmapi.Entities
         public required string Name { get; set; }
         public required string Lastname { get; set; }
         public required string Role { get; set; }
-        public required List<string> Permissions { get; set; }
     }
 }

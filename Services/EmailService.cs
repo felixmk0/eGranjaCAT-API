@@ -1,4 +1,5 @@
-﻿using nastrafarmapi.Interfaces;
+﻿using DocumentFormat.OpenXml.Validation;
+using nastrafarmapi.Interfaces;
 using System.Net.Mail;
 
 namespace nastrafarmapi.Services
@@ -31,15 +32,14 @@ namespace nastrafarmapi.Services
                 body = await ReplaceEmailBodyVarsAsync(templateName, variables ?? new Dictionary<string, string>());
             }
 
-            using var mailMessage = new MailMessage
-            {
-                From = new MailAddress(configuration["EmailSettings:EmailSender"]!),
-                Subject = subject,
-                Body = body,
-                IsBodyHtml = true,
+            MailMessage mailMessage = new MailMessage();
 
-            };
+            mailMessage.From = new MailAddress(configuration["EmailSettings:EmailSender"]!);
             mailMessage.To.Add(to);
+            mailMessage.Subject = subject;
+            mailMessage.Body = body;
+            mailMessage.IsBodyHtml = true;
+
 
             if (attachments != null)
             {

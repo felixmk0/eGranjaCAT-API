@@ -13,7 +13,6 @@ public class AutoMapperProfiles : Profile
         CreateMap<CreateFarmDTO, Farm>();
         CreateMap<Farm, GetFarmDTO>();
 
-
         CreateMap<CreateUserDTO, User>()
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email));
@@ -22,7 +21,6 @@ public class AutoMapperProfiles : Profile
         CreateMap<User, GetUserDTO>();
 
         CreateMap<CreateLotDTO, Lot>()
-            .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
@@ -32,12 +30,14 @@ public class AutoMapperProfiles : Profile
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.FarmId, opt => opt.Ignore())
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
-            .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
-            .ForMember(dest => dest.CreatedByUser, opt => opt.Ignore())
+            .ForMember(dest => dest.User, opt => opt.Ignore())
             .ForMember(dest => dest.Farm, opt => opt.Ignore());
 
+        CreateMap<Lot, GetLotDTO>()
+                .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
+                .ForMember(dest => dest.Farm, opt => opt.MapFrom(src => src.Farm));
+
         CreateMap<CreateEntradaDTO, Entrada>()
-            .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore());

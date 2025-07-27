@@ -28,9 +28,9 @@ namespace nastrafarmapi.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetEntradaById")]
-        public async Task<IActionResult> GetEntradaById(int farmId, int id)
+        public async Task<IActionResult> GetEntradaById(int id)
         {
-            var result = await service.GetEntradaByIdAsync(farmId, id);
+            var result = await service.GetEntradaByIdAsync(id);
             if (!result.Success) return BadRequest(new { result.Errors });
             if (result.Data == null) return NotFound();
             return Ok(result.Data);
@@ -39,8 +39,8 @@ namespace nastrafarmapi.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateEntrada(int farmId, [FromBody] CreateEntradaDTO dto)
         {
-            var userId = User.GetUserId();
-            var result = await service.CreateEntradaAsync(farmId, userId, dto);
+            var userGuid = User.GetUserId();
+            var result = await service.CreateEntradaAsync(farmId, userGuid, dto);
             if (!result.Success) return BadRequest(new { result.Errors });
             return CreatedAtAction("GetEntradaById", new { farmId, id = result.Data }, null);
         }
@@ -59,6 +59,33 @@ namespace nastrafarmapi.Controllers
             var result = await service.DeleteEntradaAsync(farmId, id);
             if (!result.Success) return BadRequest(new { result.Errors });
             return NoContent();
+        }
+
+        [HttpGet("export-all")]
+        public async Task<IActionResult> ExportAllEntrades()
+        {
+            var stream = await service.ExportEntradesAsync();
+            if (stream == null) return NotFound();
+            var fileName = $"entrades_{DateTime.Now:yyyyMMdd}.xlsx";
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        }
+
+        [HttpGet("export")]
+        public async Task<IActionResult> ExportEntrades(int farmId)
+        {
+            var stream = await service.ExportEntradesByFarmAsync(farmId);
+            if (stream == null) return NotFound();
+            var fileName = $"entrades_granja_{farmId}_{DateTime.Now:yyyyMMdd}.xlsx";
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        }
+
+        [HttpGet("export/{id:int}")]
+        public async Task<IActionResult> ExportEntradaById(int id)
+        {
+            var stream = await service.ExportEntradaByIdAsync(id);
+            if (stream == null) return NotFound();
+            var fileName = $"entrada_{id}_{DateTime.Now:yyyyMMdd}.xlsx";
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
     }
 }

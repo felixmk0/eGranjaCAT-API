@@ -1,26 +1,33 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using nastrafarmapi.Data;
 using nastrafarmapi.DTOs.Moviments.Entrades;
+using nastrafarmapi.Entities;
 using nastrafarmapi.Entities.Moviments;
+using nastrafarmapi.ExportConfigs;
 using nastrafarmapi.Interfaces;
 
 namespace nastrafarmapi.Services
 {
     public class EntradaService : IEntradaService
     {
+        private readonly UserManager<User> userManager;
         private readonly IMapper mapper;
         private readonly ApplicationDbContext context;
         private readonly ILogger<EntradaService> logger;
+        private readonly IExcelService excelService;
 
-        public EntradaService(IMapper mapper, ApplicationDbContext context, ILogger<EntradaService> logger)
+        public EntradaService(UserManager<User> userManager,IMapper mapper, ApplicationDbContext context, ILogger<EntradaService> logger, IExcelService excelService)
         {
+            this.userManager = userManager;
             this.mapper = mapper;
             this.context = context;
             this.logger = logger;
+            this.excelService = excelService;
         }
 
-        public async Task<ServiceResult<int?>> CreateEntradaAsync(int farmId, int userId, CreateEntradaDTO createEntradaDTO)
+        public async Task<ServiceResult<int?>> CreateEntradaAsync(int farmId, string userId, CreateEntradaDTO createEntradaDTO)
         {
             var resultObj = new ServiceResult<int?>();
             try
@@ -41,10 +48,13 @@ namespace nastrafarmapi.Services
                     return resultObj;
                 }
 
+                var user = await userManager.FindByIdAsync(userId.ToString());
+
                 var entrada = mapper.Map<Entrada>(createEntradaDTO);
                 entrada.FarmId = farmId;
-                entrada.CreatedBy = userId.ToString();
                 entrada.CreatedAt = DateTime.UtcNow;
+                entrada.UserGuid = userId;
+                entrada.User = user!;
 
                 await context.Entrades.AddAsync(entrada);
                 await context.SaveChangesAsync();
@@ -95,21 +105,13 @@ namespace nastrafarmapi.Services
             return resultObj;
         }
 
-        public async Task<ServiceResult<GetEntradaDTO?>> GetEntradaByIdAsync(int farmId, int entradaId)
+        public async Task<ServiceResult<GetEntradaDTO?>> GetEntradaByIdAsync(int entradaId)
         {
             var resultObj = new ServiceResult<GetEntradaDTO?>();
             try
             {
-                var farmExists = await context.Farms.AnyAsync(f => f.Id == farmId);
-                if (!farmExists)
-                {
-                    resultObj.Success = false;
-                    resultObj.Errors.Add("La granja no existeix");
-                    return resultObj;
-                }
-                var entrada = await context.Entrades
-                    .Where(e => e.FarmId == farmId && e.Id == entradaId)
-                    .FirstOrDefaultAsync();
+                var entrada = await context.Entrades.FirstOrDefaultAsync(e => e.Id == entradaId);
+
                 if (entrada == null)
                 {
                     resultObj.Success = false;
@@ -201,6 +203,24 @@ namespace nastrafarmapi.Services
             }
             return resultObj;
         }
-    }
 
+
+        public async Task<MemoryStream> ExportEntradesAsync()
+        {
+            var entrades = await context.Entrades.ToListAsync();
+            return await excelService.GenerateExcelAsync(entrades, ExcelColumnMappings.EntradaExcelColumnMappings, $"Entrades - {DateTime.Today:yyyyMMdd}");
+        }
+
+        public async Task<MemoryStream> ExportEntradesByFarmAsync(int farmId)
+        {
+            var entrades = await context.Entrades.Where(e => e.FarmId == farmId).ToListAsync();
+            return await excelService.GenerateExcelAsync(entrades, ExcelColumnMappings.EntradaExcelColumnMappings, $"Entrades (Granja {farmId}) - {DateTime.Today:yyyyMMdd}");
+        }
+
+        public async Task<MemoryStream> ExportEntradaByIdAsync(int entradaId)
+        {
+            var entrades = await context.Entrades.Where(e => e.Id == entradaId).ToListAsync();
+            return await excelService.GenerateExcelAsync(entrades, ExcelColumnMappings.EntradaExcelColumnMappings, $"Entrada {entradaId} - {DateTime.Today:yyyyMMdd}");
+        }
+    }
 }

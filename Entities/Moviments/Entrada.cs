@@ -11,7 +11,9 @@ namespace nastrafarmapi.Entities.Moviments
         public int NombreAnimals { get; set; }
         public double PesTotal { get; set; }
         public double PesIndividual { get; set; }
+
         public int LotId { get; set; }
+        public Lot Lot { get; set; } = null!;
 
         public TipusOrigen Origen { get; set; }
 
@@ -21,14 +23,15 @@ namespace nastrafarmapi.Entities.Moviments
         public string NumeroDocumentTrasllat { get; set; } = null!;
         public string? Observacions { get; set; }
 
-
-        public string CreatedBy { get; set; } = null!;
-        public User CreatedByUser { get; set; } = null!;
+        public string UserGuid { get; set; }
+        public User User { get; set; } = null!;
 
         public int FarmId { get; set; }
         public Farm Farm { get; set; } = null!;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public bool Updated { get; set; } = false;
         public DateTime? UpdatedAt { get; set; }
     }
 }

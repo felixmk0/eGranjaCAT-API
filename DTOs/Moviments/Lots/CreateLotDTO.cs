@@ -6,8 +6,5 @@ namespace nastrafarmapi.DTOs.Moviments.Lots
     {
         [Required]
         public required string Name { get; set; }
-
-        [Required]
-        public required int FarmId { get; set; }
     }
 }

@@ -21,28 +21,36 @@ namespace nastrafarmapi.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Lot>()
-            .HasOne(l => l.CreatedByUser)
-            .WithMany()
-            .HasForeignKey(l => l.CreatedBy)
-            .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(l => l.User)
+                .WithMany()
+                .HasForeignKey(l => l.UserGuid) 
+                .OnDelete(DeleteBehavior.Restrict);
+
 
             modelBuilder.Entity<Lot>()
                 .HasOne(l => l.Farm)
                 .WithMany()
                 .HasForeignKey(l => l.FarmId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Entrada>()
-            .HasOne(l => l.CreatedByUser)
-            .WithMany()
-            .HasForeignKey(l => l.CreatedBy)
-            .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict); 
 
             modelBuilder.Entity<Entrada>()
                 .HasOne(l => l.Farm)
                 .WithMany()
                 .HasForeignKey(l => l.FarmId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Entrada>()
+                .HasOne(l => l.User)
+                .WithMany()
+                .HasForeignKey(l => l.UserGuid)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Entrada>()
+                .HasOne(e => e.Lot)
+                .WithMany()
+                .HasForeignKey(e => e.LotId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
+
     }
 }

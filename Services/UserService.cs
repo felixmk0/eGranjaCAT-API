@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.InkML;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using nastrafarmapi.Data;
 using nastrafarmapi.DTOs;
 using nastrafarmapi.DTOs.Users;
 using nastrafarmapi.Entities;
@@ -20,8 +22,9 @@ namespace nastrafarmapi.Services
         private readonly IConfiguration configuration;
         private readonly IMapper mapper;
         private readonly IEmailService emailService;
+        private readonly ApplicationDbContext context;
 
-        public UserService(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, ILogger<UserService> logger, IConfiguration configuration, IMapper mapper, IEmailService emailService)
+        public UserService(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, ILogger<UserService> logger, IConfiguration configuration, IMapper mapper, IEmailService emailService, ApplicationDbContext context)
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
@@ -29,6 +32,7 @@ namespace nastrafarmapi.Services
             this.configuration = configuration;
             this.mapper = mapper;
             this.emailService = emailService;
+            this.context = context;
         }
 
         public async Task<ServiceResult<AuthResponseDTO>> CreateUserAsync(CreateUserDTO userDTO)
@@ -83,8 +87,17 @@ namespace nastrafarmapi.Services
 
                 foreach (var perm in userDTO.Permissions)
                 {
-                    await userManager.AddClaimAsync(user, new Claim("Access", perm));
+                    var claim = new Claim("Access", perm);
+                    var claimResult = await userManager.AddClaimAsync(user, claim);
+                    if (!claimResult.Succeeded)
+                    {
+                        foreach (var error in claimResult.Errors)
+                            logger.LogError($"Error adding claim {perm}: {error.Description}");
+                    }
                 }
+
+
+                await context.SaveChangesAsync();
 
                 var variables = new Dictionary<string, string>
                 {
@@ -163,7 +176,7 @@ namespace nastrafarmapi.Services
 
 
 
-        public async Task<ServiceResult<bool>> DeleteUserById(int id)
+        public async Task<ServiceResult<bool>> DeleteUserById(Guid id)
         {
             var resultObj = new ServiceResult<bool>();
 
@@ -234,7 +247,7 @@ namespace nastrafarmapi.Services
             }
         }
 
-        public async Task<ServiceResult<GetUserDTO?>> GetUserByIdAsync(int id)
+        public async Task<ServiceResult<GetUserDTO?>> GetUserByIdAsync(Guid id)
         {
             var resultObj = new ServiceResult<GetUserDTO?>();
 
@@ -268,40 +281,29 @@ namespace nastrafarmapi.Services
 
         private async Task<AuthResponseDTO> BuildJwtToken(TokenUserDTO userDTO)
         {
-            try
+            var claims = new List<Claim>
             {
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.NameIdentifier, userDTO.Id.ToString()),
-                    new Claim(ClaimTypes.Name, userDTO.Email),
-                    new Claim(ClaimTypes.Role, userDTO.Role.ToString())
-                };
+                new Claim(ClaimTypes.NameIdentifier, userDTO.Id),
+                new Claim(ClaimTypes.Name, userDTO.Email),
+                new Claim(ClaimTypes.Role, userDTO.Role.ToString())
+            };
 
-                var user = await userManager.FindByEmailAsync(userDTO.Email);
-                if (user == null)
-                {
-                    logger.LogError("Usuari no trobat en generar el token JWT per {Email}", userDTO.Email);
-                    throw new InvalidOperationException("No s'ha pogut generar el token: usuari no trobat.");
-                }
+            var user = await userManager.FindByEmailAsync(userDTO.Email);
+            var userClaims = await userManager.GetClaimsAsync(user!);
+            claims.AddRange(userClaims);
 
-                var claimsDb = await userManager.GetClaimsAsync(user);
-                claims.AddRange(claimsDb);
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtKey"]!));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var expires = DateTime.UtcNow.AddDays(1);
 
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtKey"]!));
-                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-                var expires = DateTime.UtcNow.AddDays(1);
+            var secToken = new JwtSecurityToken(
+                claims: claims,
+                expires: expires,
+                signingCredentials: creds
+            );
+            var token = new JwtSecurityTokenHandler().WriteToken(secToken);
 
-                var secToken = new JwtSecurityToken(claims: claims, expires: expires, signingCredentials: creds);
-                var token = new JwtSecurityTokenHandler().WriteToken(secToken);
-
-                return new AuthResponseDTO { Token = token, Expiraton = expires };
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Error inesperat en construir el token JWT.");
-                throw;
-            }
+            return new AuthResponseDTO { Token = token, Expiraton = expires };
         }
-
     }
 }

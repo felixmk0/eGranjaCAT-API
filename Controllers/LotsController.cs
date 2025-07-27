@@ -23,8 +23,8 @@ namespace nastrafarmapi.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateLot(int farmId, [FromBody] CreateLotDTO dto)
         {
-            var userId = User.GetUserId();
-            var result = await service.CreateLotAsync(farmId, userId, dto);
+            var userGuid = User.GetUserId();
+            var result = await service.CreateLotAsync(farmId, userGuid, dto);
             if (!result.Success) return BadRequest(new { result.Errors });
             return CreatedAtAction("GetLotById", new { farmId, id = result.Data }, result.Data);
         }
@@ -56,8 +56,7 @@ namespace nastrafarmapi.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateLot(int farmId, int id, [FromBody] UpdateLotDTO dto)
         {
-            var userId = User.GetUserId();
-            var result = await service.UpdateLotAsync(farmId, userId, dto);
+            var result = await service.UpdateLotAsync(farmId, id, dto);
             if (!result.Success) return BadRequest(new { result.Errors });
             return CreatedAtAction("GetLotById", new { farmId, id }, result.Data);
         }
