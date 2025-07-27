@@ -23,5 +23,17 @@ namespace nastrafarmapi.ExportConfigs
                 new ExcelColumnMap<Entrada> { Header = "Data de creació", ValueSelector = e => e.CreatedAt.ToString("dd/MM/yyyy HH:mm") },
                 new ExcelColumnMap<Entrada> { Header = "Observacions", ValueSelector = e => e.Observacions }
             };
+
+
+        public static readonly List<ExcelColumnMap<Lot>> LotExcelColumnMappings =
+            new()
+            {
+                new ExcelColumnMap<Lot> { Header = "ID", ValueSelector = e => e.Id },
+                new ExcelColumnMap<Lot> { Header = "Explotació", ValueSelector = e => e.Farm?.Name ?? string.Empty },
+                new ExcelColumnMap<Lot> { Header = "Nom", ValueSelector = e => e.Name ?? string.Empty },
+                new ExcelColumnMap<Lot> { Header = "Actiu", ValueSelector = e => e.Active },
+                new ExcelColumnMap<Lot> { Header = "Creador", ValueSelector = e => e.User?.Email ?? string.Empty },
+                new ExcelColumnMap<Lot> { Header = "Data de creació", ValueSelector = e => e.CreatedAt.ToString("dd/MM/yyyy HH:mm") },
+            };
     }
 }

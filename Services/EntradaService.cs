@@ -18,7 +18,7 @@ namespace nastrafarmapi.Services
         private readonly ILogger<EntradaService> logger;
         private readonly IExcelService excelService;
 
-        public EntradaService(UserManager<User> userManager,IMapper mapper, ApplicationDbContext context, ILogger<EntradaService> logger, IExcelService excelService)
+        public EntradaService(UserManager<User> userManager, IMapper mapper, ApplicationDbContext context, ILogger<EntradaService> logger, IExcelService excelService)
         {
             this.userManager = userManager;
             this.mapper = mapper;
@@ -83,9 +83,7 @@ namespace nastrafarmapi.Services
                     resultObj.Errors.Add("La granja no existeix");
                     return resultObj;
                 }
-                var entrades = await context.Entrades
-                    .Where(e => e.FarmId == farmId)
-                    .ToListAsync();
+                var entrades = await context.Entrades.Include(l => l.User).Include(l => l.Farm).Include(l => l.Lot).Where(e => e.FarmId == farmId).ToListAsync();
                 if (entrades == null || !entrades.Any())
                 {
                     resultObj.Success = false;
@@ -110,7 +108,7 @@ namespace nastrafarmapi.Services
             var resultObj = new ServiceResult<GetEntradaDTO?>();
             try
             {
-                var entrada = await context.Entrades.FirstOrDefaultAsync(e => e.Id == entradaId);
+                var entrada = await context.Entrades.Include(l => l.User).Include(l => l.Farm).Include(l => l.Lot).FirstOrDefaultAsync(e => e.Id == entradaId);
 
                 if (entrada == null)
                 {
@@ -207,19 +205,19 @@ namespace nastrafarmapi.Services
 
         public async Task<MemoryStream> ExportEntradesAsync()
         {
-            var entrades = await context.Entrades.ToListAsync();
+            var entrades = await context.Entrades.Include(l => l.User).Include(l => l.Farm).Include(l => l.Lot).ToListAsync();
             return await excelService.GenerateExcelAsync(entrades, ExcelColumnMappings.EntradaExcelColumnMappings, $"Entrades - {DateTime.Today:yyyyMMdd}");
         }
 
         public async Task<MemoryStream> ExportEntradesByFarmAsync(int farmId)
         {
-            var entrades = await context.Entrades.Where(e => e.FarmId == farmId).ToListAsync();
+            var entrades = await context.Entrades.Include(l => l.User).Include(l => l.Farm).Include(l => l.Lot).Where(e => e.FarmId == farmId).ToListAsync();
             return await excelService.GenerateExcelAsync(entrades, ExcelColumnMappings.EntradaExcelColumnMappings, $"Entrades (Granja {farmId}) - {DateTime.Today:yyyyMMdd}");
         }
 
         public async Task<MemoryStream> ExportEntradaByIdAsync(int entradaId)
         {
-            var entrades = await context.Entrades.Where(e => e.Id == entradaId).ToListAsync();
+            var entrades = await context.Entrades.Include(l => l.User).Include(l => l.Farm).Include(l => l.Lot).Where(e => e.Id == entradaId).ToListAsync();
             return await excelService.GenerateExcelAsync(entrades, ExcelColumnMappings.EntradaExcelColumnMappings, $"Entrada {entradaId} - {DateTime.Today:yyyyMMdd}");
         }
     }

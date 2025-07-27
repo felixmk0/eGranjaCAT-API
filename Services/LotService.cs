@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using nastrafarmapi.Data;
 using nastrafarmapi.DTOs.Moviments.Lots;
 using nastrafarmapi.Entities;
+using nastrafarmapi.ExportConfigs;
 using nastrafarmapi.Interfaces;
 
 namespace nastrafarmapi.Services
@@ -13,12 +14,14 @@ namespace nastrafarmapi.Services
         private readonly UserManager<User> userManager;
         private readonly IMapper mapper;
         private readonly ApplicationDbContext context;
+        private readonly IExcelService excelService;
 
-        public LotService(UserManager<User> userManager, IMapper mapper, ApplicationDbContext context)
+        public LotService(UserManager<User> userManager, IMapper mapper, ApplicationDbContext context, IExcelService excelService)
         {
             this.userManager = userManager;
             this.mapper = mapper;
             this.context = context;
+            this.excelService = excelService;
         }
 
         public async Task<ServiceResult<int?>> CreateLotAsync(int farmId, string userId, CreateLotDTO createLotDTO)
@@ -66,7 +69,7 @@ namespace nastrafarmapi.Services
         {
             var resultObj = new ServiceResult<List<GetLotDTO>>();
             var lots = await context.Lots.Include(l => l.User).Include(l => l.Farm).Where(l => l.FarmId == farmId && l.Active).ToListAsync();
-           
+
             if (lots == null || !lots.Any())
             {
                 resultObj.Success = false;
@@ -139,6 +142,44 @@ namespace nastrafarmapi.Services
             result.Success = true;
             result.Data = true;
             return result;
+        }
+
+        public async Task<ServiceResult<bool>> DeleteLotAsync(int lotId)
+        {
+            var result = new ServiceResult<bool>();
+            var lot = await context.Lots.FirstOrDefaultAsync(l => l.Id == lotId);
+
+            if (lot == null)
+            {
+                result.Success = false;
+                result.Errors.Add("Lot no trobat");
+                return result;
+            }
+
+            context.Lots.Remove(lot);
+            await context.SaveChangesAsync();
+
+            result.Success = true;
+            result.Data = true;
+            return result;
+        }
+
+        public async Task<MemoryStream> ExportLotsAsync()
+        {
+            var lots = await context.Lots.Include(l => l.User).Include(l => l.Farm).ToListAsync();
+            return await excelService.GenerateExcelAsync(lots, ExcelColumnMappings.LotExcelColumnMappings, $"Lots - {DateTime.Today:yyyyMMdd}");
+        }
+
+        public async Task<MemoryStream> ExportLotsByFarmAsync(int farmId)
+        {
+            var lots = await context.Lots.Include(l => l.User).Include(l => l.Farm).Where(l => l.FarmId == farmId).ToListAsync();
+            return await excelService.GenerateExcelAsync(lots, ExcelColumnMappings.LotExcelColumnMappings, $"Lots (Granja {farmId}) - {DateTime.Today:yyyyMMdd}");
+        }
+
+        public async Task<MemoryStream> ExportLotByIdAsync(int lotId)
+        {
+            var lots = await context.Lots.Include(l => l.User).Include(l => l.Farm).Where(l => l.Id == lotId).ToListAsync();
+            return await excelService.GenerateExcelAsync(lots, ExcelColumnMappings.LotExcelColumnMappings, $"Lot {lotId} - {DateTime.Today:yyyyMMdd}");
         }
     }
 }

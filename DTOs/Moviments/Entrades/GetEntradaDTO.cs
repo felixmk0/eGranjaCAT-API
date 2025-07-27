@@ -1,4 +1,7 @@
-﻿using nastrafarmapi.Entities.Moviments;
+﻿using nastrafarmapi.DTOs.Farms;
+using nastrafarmapi.DTOs.Moviments.Lots;
+using nastrafarmapi.DTOs.Users;
+using nastrafarmapi.Entities.Moviments;
 using System.Text.Json.Serialization;
 
 namespace nastrafarmapi.DTOs.Moviments.Entrades
@@ -6,8 +9,6 @@ namespace nastrafarmapi.DTOs.Moviments.Entrades
     public class GetEntradaDTO
     {
         public int Id { get; set; }
-
-        public int FarmId { get; set; }
 
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public TipusCategories Categoria { get; set; }
@@ -20,8 +21,6 @@ namespace nastrafarmapi.DTOs.Moviments.Entrades
 
         public double PesIndividual { get; set; }
 
-        public int LotId { get; set; }
-
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public TipusOrigen Origen { get; set; }
 
@@ -32,5 +31,9 @@ namespace nastrafarmapi.DTOs.Moviments.Entrades
         public string NumeroDocumentTrasllat { get; set; } = null!;
 
         public string? Observacions { get; set; }
+
+        public GetLotNoRelationsDTO Lot { get; set; }
+        public GetFarmDTO Farm { get; set; }
+        public GetUserDTO User { get; set; }
     }
 }

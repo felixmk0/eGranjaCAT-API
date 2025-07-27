@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using nastrafarmapi.DTOs.Moviments.Lots;
 using nastrafarmapi.Extensions;
-using nastrafarmapi.Interfaces;
+using nastrafarmapi.Services;
 
 namespace nastrafarmapi.Controllers
 {
@@ -14,9 +14,9 @@ namespace nastrafarmapi.Controllers
     {
         private readonly ILotService service;
 
-        public LotsController(ILotService lotServices)
+        public LotsController(ILotService service)
         {
-            service = lotServices;
+            this.service = service;
         }
 
 
@@ -60,5 +60,34 @@ namespace nastrafarmapi.Controllers
             if (!result.Success) return BadRequest(new { result.Errors });
             return CreatedAtAction("GetLotById", new { farmId, id }, result.Data);
         }
+
+        [HttpGet("export-all")]
+        public async Task<IActionResult> ExportAllLots()
+        {
+            var stream = await service.ExportLotsAsync();
+            if (stream == null) return NotFound();
+            var fileName = $"lots_{DateTime.Now:yyyyMMdd}.xlsx";
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        }
+
+        [HttpGet("export")]
+        public async Task<IActionResult> ExportLots(int farmId)
+        {
+            var stream = await service.ExportLotsByFarmAsync(farmId);
+            if (stream == null) return NotFound();
+            var fileName = $"lots_granja_{farmId}_{DateTime.Now:yyyyMMdd}.xlsx";
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        }
+
+        [HttpGet("export/{id:int}")]
+        public async Task<IActionResult> ExportLotById(int id)
+        {
+            var stream = await service.ExportLotByIdAsync(id);
+            if (stream == null) return NotFound();
+            var fileName = $"lots_{id}_{DateTime.Now:yyyyMMdd}.xlsx";
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        }
+
+
     }
 }

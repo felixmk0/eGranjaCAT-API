@@ -37,6 +37,8 @@ public class AutoMapperProfiles : Profile
                 .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
                 .ForMember(dest => dest.Farm, opt => opt.MapFrom(src => src.Farm));
 
+        CreateMap<Lot, GetLotNoRelationsDTO>();
+
         CreateMap<CreateEntradaDTO, Entrada>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())

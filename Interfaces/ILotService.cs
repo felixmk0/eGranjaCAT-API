@@ -1,11 +1,14 @@
 ﻿using nastrafarmapi.DTOs.Moviments.Lots;
-using nastrafarmapi.Services;
 
-namespace nastrafarmapi.Interfaces
+namespace nastrafarmapi.Services
 {
     public interface ILotService
     {
         Task<ServiceResult<int?>> CreateLotAsync(int farmId, string userId, CreateLotDTO createLotDTO);
+        Task<ServiceResult<bool>> DeleteLotAsync(int lotId);
+        Task<MemoryStream> ExportLotByIdAsync(int lotId);
+        Task<MemoryStream> ExportLotsAsync();
+        Task<MemoryStream> ExportLotsByFarmAsync(int farmId);
         Task<ServiceResult<List<GetLotDTO>>> GetActiveLotsByFarmAsync(int farmId);
         Task<ServiceResult<GetLotDTO>> GetLotByFarmAndIdAsync(int farmId, int lotId);
         Task<ServiceResult<GetLotDTO>> GetLotsByFarmIdAsync(int farmId);

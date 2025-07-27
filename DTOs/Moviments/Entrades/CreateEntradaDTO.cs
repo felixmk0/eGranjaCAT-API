@@ -7,9 +7,6 @@ namespace nastrafarmapi.DTOs.Moviments.Entrades
     public class CreateEntradaDTO : IValidatableObject
     {
         [Required]
-        public int FarmId { get; set; }
-
-        [Required]
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public TipusCategories Categoria { get; set; }
 
