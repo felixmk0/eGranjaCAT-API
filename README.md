@@ -1,4 +1,4 @@
-# NastrafarmSIGE - RESTful API
+# eGranjaCAT - RESTful API
 
 ---
 
