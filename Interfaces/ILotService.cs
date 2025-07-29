@@ -1,6 +1,7 @@
 ﻿using nastrafarmapi.DTOs.Moviments.Lots;
+using nastrafarmapi.Services;
 
-namespace nastrafarmapi.Services
+namespace nastrafarmapi.Interfaces
 {
     public interface ILotService
     {

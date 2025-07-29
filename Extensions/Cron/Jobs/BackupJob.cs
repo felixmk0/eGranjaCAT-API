@@ -1,7 +1,7 @@
 ﻿using nastrafarmapi.Interfaces;
 using nastrafarmapi.Services;
 
-namespace nastrafarmapi.Extensions.Cron
+namespace nastrafarmapi.Extensions.Cron.Jobs
 {
     public class BackupJob : CronBackgroundJob
     {

@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using nastrafarmapi.Data;
 using nastrafarmapi.Entities;
 using nastrafarmapi.Extensions.Cron;
+using nastrafarmapi.Extensions.Cron.Jobs;
 using nastrafarmapi.Interfaces;
 using nastrafarmapi.Services;
 using System.Security.Claims;

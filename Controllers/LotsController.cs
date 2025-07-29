@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using nastrafarmapi.DTOs.Moviments.Lots;
 using nastrafarmapi.Extensions;
-using nastrafarmapi.Services;
+using nastrafarmapi.Interfaces;
 
 namespace nastrafarmapi.Controllers
 {
