@@ -12,6 +12,7 @@ using nastrafarmapi.Services;
 using System.Security.Claims;
 using System.Text;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(opts =>
@@ -95,10 +96,10 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "NastrafarmSIGE - RESTful API",
-        Version = "v1.0",
+        Title = "eGranjaCAT - RESTful API",
+        Version = "v1",
         Description = "Documentació oficial de la API per la gestio d'explotacions porcines catalanes.",
-        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+        Contact = new OpenApiContact
         {
             Name = " - Felix Montragull Kruse",
             Email = "fmontrakruse@gmail.com"
@@ -118,7 +119,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "NastrafarmSIGE - RESTful API v1.0");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "eGranjaCAT - RESTful API v1");
         c.RoutePrefix = string.Empty;
     });
 }

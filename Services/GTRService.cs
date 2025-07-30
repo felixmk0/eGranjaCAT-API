@@ -1,7 +1,4 @@
-﻿using System.Net.Http.Json;
-using System.Text.Json;
-using Microsoft.Extensions.Logging;
-using nastrafarmapi.DTOs.GTR.Guies;
+﻿using nastrafarmapi.DTOs.GTR.Guies;
 
 namespace nastrafarmapi.Services
 {
@@ -15,7 +12,7 @@ namespace nastrafarmapi.Services
             this.logger = logger;
             gtrClient = new HttpClient
             {
-                BaseAddress = new Uri("https://preproduccio.aplicacions.agricultura.gencat.cat/gtr/WSMobilitat/AppJava/")
+                BaseAddress = new Uri("https://preproduccio.aplicacions.agricultura.gencat.cat/gtr/")
             };
         }
 
@@ -25,7 +22,7 @@ namespace nastrafarmapi.Services
 
             try
             {
-                var response = await gtrClient.PostAsJsonAsync("WSCarregaGuiesMobilitat", requestDTO);
+                var response = await gtrClient.PostAsJsonAsync("WSMobilitat/AppJava/WSCarregaGuiesMobilitat", requestDTO);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -65,7 +62,7 @@ namespace nastrafarmapi.Services
 
             try
             {
-                var response = await gtrClient.PostAsJsonAsync("WSModificarGuiasMovilitat", requestDTO);
+                var response = await gtrClient.PostAsJsonAsync("WSMobilitat/AppJava/WSModificarGuiasMovilitat", requestDTO);
 
                 if (response.IsSuccessStatusCode)
                 {
